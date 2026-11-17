@@ -1,22 +1,162 @@
 # Theme01 – schlicht, modern, dezent
-# Ein Theme mit hellem und dunklem Modus. Home Assistant wählt den Modus
-# automatisch nach den Einstellungen im Benutzerprofil.
+#
+# Drei Themes in einer Datei: "Theme01" (Akzent Blau), "Theme01 Salbei" und
+# "Theme01 Graphit". Jedes hat einen hellen und einen dunklen Modus; Home
+# Assistant wählt ihn nach der Einstellung im Benutzerprofil.
+#
+# Animationen: Ist card-mod (HACS) installiert, kommen dezente Übergänge dazu.
+# Ohne card-mod funktioniert das Theme genauso, nur ohne Bewegung.
+# Wer im System "Bewegung reduzieren" eingestellt hat, bekommt keine Animationen.
+
+# ---------------------------------------------------------------------------
+# Gemeinsame Bausteine (YAML-Anker)
+# ---------------------------------------------------------------------------
 
 Theme01:
-  # Schrift und Form (gilt für beide Modi)
-  primary-font-family: "Inter, Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif"
-  paper-font-common-base_-_font-family: "var(--primary-font-family)"
-  ha-card-border-radius: "12px"
-  ha-card-border-width: "1px"
-  ha-card-box-shadow: "none"
-  ha-dialog-border-radius: "16px"
-  ha-badge-border-radius: "16px"
-  mdc-shape-small: "10px"
-  mdc-shape-medium: "12px"
+  card-mod-theme: Theme01
+
+  # Schrift und Form
+  primary-font-family: &t01_font "Inter, Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif"
+  paper-font-common-base_-_font-family: &t01_font_var "var(--primary-font-family)"
+  ha-font-family-body: *t01_font_var
+  ha-font-family-heading: *t01_font_var
+  ha-card-border-radius: &t01_radius "12px"
+  ha-card-border-width: &t01_border_width "1px"
+  ha-card-box-shadow: &t01_shadow "none"
+  ha-dialog-border-radius: &t01_dialog_radius "16px"
+  ha-badge-border-radius: &t01_badge_radius "16px"
+  mdc-shape-small: &t01_shape_small "10px"
+  mdc-shape-medium: &t01_shape_medium "12px"
+
+  # Bewegung (auch ohne card-mod als Variablen nutzbar)
+  t01-duration-fast: &t01_dur_fast "150ms"
+  t01-duration: &t01_dur "250ms"
+  t01-ease: &t01_ease "cubic-bezier(0.2, 0.7, 0.2, 1)"
+
+  # --- card-mod: Karten ----------------------------------------------------
+  # Nur opacity, Farben und Rahmen werden animiert, nie transform. So bleiben
+  # Pop-ups mit fester Position (z. B. bubble-card) unberührt.
+  card-mod-card: &t01_cm_card |
+    ha-card {
+      transition:
+        background-color var(--t01-duration) var(--t01-ease),
+        border-color var(--t01-duration) var(--t01-ease),
+        color var(--t01-duration) var(--t01-ease);
+      animation: t01-fade-in 320ms var(--t01-ease) both;
+    }
+    ha-card ha-state-icon,
+    ha-card ha-icon,
+    ha-card ha-tile-icon,
+    ha-card state-badge {
+      transition: color var(--t01-duration) var(--t01-ease),
+                  background-color var(--t01-duration) var(--t01-ease);
+    }
+    @media (hover: hover) {
+      ha-card:hover {
+        border-color: var(--t01-border-hover, var(--divider-color));
+      }
+    }
+    ha-card[role="button"]:active,
+    ha-card:active:has(ha-tile-icon):not(:has(ha-control-slider, ha-slider, ha-control-circular-slider, ha-big-number)) {
+      background-color: var(--t01-press, var(--secondary-background-color));
+      transition-duration: var(--t01-duration-fast);
+    }
+    @keyframes t01-fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      ha-card, ha-card * { animation: none !important; transition: none !important; }
+    }
+
+  # --- card-mod: Zeilen in Entitätenkarten ---------------------------------
+  card-mod-row-yaml: &t01_cm_row |
+    .: |
+      :host {
+        display: block;
+        border-radius: 8px;
+        transition: background-color var(--t01-duration-fast) var(--t01-ease);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        :host { transition: none !important; }
+      }
+    "hui-generic-entity-row $": |
+      state-badge {
+        transition: color var(--t01-duration) var(--t01-ease),
+                    filter var(--t01-duration) var(--t01-ease);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        state-badge { transition: none !important; }
+      }
+
+  # --- card-mod: Badges ----------------------------------------------------
+  card-mod-badge: &t01_cm_badge |
+    :host {
+      animation: t01-badge-in 320ms var(--t01-ease) both;
+    }
+    ha-badge, .badge {
+      transition: background-color var(--t01-duration-fast) var(--t01-ease),
+                  border-color var(--t01-duration-fast) var(--t01-ease);
+    }
+    @keyframes t01-badge-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :host, ha-badge, .badge { animation: none !important; transition: none !important; }
+    }
+
+  # --- card-mod: Dashboard-Rahmen (Kopfzeile, Tabs, Ansichtswechsel) --------
+  card-mod-root: &t01_cm_root |
+    #view > * {
+      animation: t01-view-in 280ms var(--t01-ease) both;
+    }
+    ha-tab-group-tab, sl-tab, paper-tab, ha-tab {
+      transition: color var(--t01-duration-fast) var(--t01-ease),
+                  background-color var(--t01-duration-fast) var(--t01-ease);
+    }
+    ha-icon-button, ha-button-menu ha-icon-button {
+      transition: color var(--t01-duration-fast) var(--t01-ease);
+    }
+    @keyframes t01-view-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #view > *, ha-tab-group-tab, sl-tab, paper-tab, ha-tab, ha-icon-button {
+        animation: none !important; transition: none !important;
+      }
+    }
+
+  # --- card-mod: Seitenleiste ----------------------------------------------
+  card-mod-sidebar: &t01_cm_sidebar |
+    ha-md-list-item, paper-icon-item, a, .item {
+      transition: background-color var(--t01-duration-fast) var(--t01-ease),
+                  color var(--t01-duration-fast) var(--t01-ease);
+    }
+    ha-svg-icon, ha-icon {
+      transition: color var(--t01-duration-fast) var(--t01-ease);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      ha-md-list-item, paper-icon-item, a, .item, ha-svg-icon, ha-icon { transition: none !important; }
+    }
+
+  # --- card-mod: Detail-Dialog ---------------------------------------------
+  card-mod-more-info: &t01_cm_more_info |
+    .content, ha-more-info-info, more-info-content {
+      animation: t01-fade-in 240ms var(--t01-ease) both;
+    }
+    @keyframes t01-fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .content, ha-more-info-info, more-info-content { animation: none !important; }
+    }
 
   modes:
-    light:
-      # Akzent
+    light: &t01_light
+      # Akzent (Blau)
       primary-color: "#3A62CC"
       rgb-primary-color: "58, 98, 204"
       accent-color: "#3A62CC"
@@ -36,6 +176,8 @@ Theme01:
       divider-color: "#E6E6E2"
       clear-background-color: "#FFFFFF"
       code-editor-background-color: "#FAFAF9"
+      t01-border-hover: "#D2D2CD"
+      t01-press: "#F3F3F0"
 
       # Text
       primary-text-color: "#1B1C1E"
@@ -47,39 +189,39 @@ Theme01:
       app-header-background-color: "#F5F5F3"
       app-header-text-color: "#1B1C1E"
       app-header-border-bottom: "1px solid #E6E6E2"
-      app-header-selection-bar-color: "#3A62CC"
+      app-header-selection-bar-color: "var(--primary-color)"
       sidebar-background-color: "#FAFAF9"
       sidebar-text-color: "#64656B"
       sidebar-icon-color: "#64656B"
       sidebar-selected-text-color: "#1B1C1E"
-      sidebar-selected-icon-color: "#3A62CC"
+      sidebar-selected-icon-color: "var(--primary-color)"
       sidebar-menu-button-text-color: "#1B1C1E"
       sidebar-menu-button-background-color: "#FAFAF9"
 
       # Zustände
       state-icon-color: "#64656B"
-      state-active-color: "#3A62CC"
+      state-active-color: "var(--primary-color)"
       state-inactive-color: "#A3A4A8"
+      state-on-color: "var(--primary-color)"
+      state-off-color: "#A3A4A8"
       state-light-active-color: "#A8730F"
       state-climate-heat-color: "#B5551C"
       state-climate-cool-color: "#3A62CC"
       state-climate-auto-color: "#3B7656"
-      state-on-color: "#3A62CC"
-      state-off-color: "#A3A4A8"
       success-color: "#3B7656"
       warning-color: "#A8730F"
       error-color: "#B3261E"
       info-color: "#3A62CC"
 
       # Schalter und Regler
-      switch-checked-color: "#3A62CC"
+      switch-checked-color: "var(--primary-color)"
       switch-checked-button-color: "#FFFFFF"
-      switch-checked-track-color: "#3A62CC"
+      switch-checked-track-color: "var(--primary-color)"
       switch-unchecked-button-color: "#FFFFFF"
       switch-unchecked-track-color: "#C9C9C5"
-      slider-color: "#3A62CC"
+      slider-color: "var(--primary-color)"
       slider-bar-color: "#E6E6E2"
-      mdc-theme-primary: "#3A62CC"
+      mdc-theme-primary: "var(--primary-color)"
       mdc-select-fill-color: "#EFEFEC"
       mdc-text-field-fill-color: "#EFEFEC"
       input-fill-color: "#EFEFEC"
@@ -89,8 +231,8 @@ Theme01:
       table-row-alternative-background-color: "#FAFAF9"
       mdc-dialog-scrim-color: "rgba(27, 28, 30, 0.32)"
 
-    dark:
-      # Akzent
+    dark: &t01_dark
+      # Akzent (Blau)
       primary-color: "#8EABF5"
       rgb-primary-color: "142, 171, 245"
       accent-color: "#8EABF5"
@@ -110,6 +252,8 @@ Theme01:
       divider-color: "#26272B"
       clear-background-color: "#111214"
       code-editor-background-color: "#16171A"
+      t01-border-hover: "#36373C"
+      t01-press: "#1F2023"
 
       # Text
       primary-text-color: "#ECEDEF"
@@ -121,39 +265,39 @@ Theme01:
       app-header-background-color: "#111214"
       app-header-text-color: "#ECEDEF"
       app-header-border-bottom: "1px solid #26272B"
-      app-header-selection-bar-color: "#8EABF5"
+      app-header-selection-bar-color: "var(--primary-color)"
       sidebar-background-color: "#0E0F11"
       sidebar-text-color: "#9C9DA4"
       sidebar-icon-color: "#9C9DA4"
       sidebar-selected-text-color: "#ECEDEF"
-      sidebar-selected-icon-color: "#8EABF5"
+      sidebar-selected-icon-color: "var(--primary-color)"
       sidebar-menu-button-text-color: "#ECEDEF"
       sidebar-menu-button-background-color: "#0E0F11"
 
       # Zustände
       state-icon-color: "#9C9DA4"
-      state-active-color: "#8EABF5"
+      state-active-color: "var(--primary-color)"
       state-inactive-color: "#5E5F66"
+      state-on-color: "var(--primary-color)"
+      state-off-color: "#5E5F66"
       state-light-active-color: "#E6B45C"
       state-climate-heat-color: "#E89A66"
       state-climate-cool-color: "#8EABF5"
       state-climate-auto-color: "#93C2A6"
-      state-on-color: "#8EABF5"
-      state-off-color: "#5E5F66"
       success-color: "#93C2A6"
       warning-color: "#E6B45C"
       error-color: "#F2867E"
       info-color: "#8EABF5"
 
       # Schalter und Regler
-      switch-checked-color: "#8EABF5"
+      switch-checked-color: "var(--primary-color)"
       switch-checked-button-color: "#111214"
-      switch-checked-track-color: "#8EABF5"
+      switch-checked-track-color: "var(--primary-color)"
       switch-unchecked-button-color: "#9C9DA4"
       switch-unchecked-track-color: "#232428"
-      slider-color: "#8EABF5"
+      slider-color: "var(--primary-color)"
       slider-bar-color: "#26272B"
-      mdc-theme-primary: "#8EABF5"
+      mdc-theme-primary: "var(--primary-color)"
       mdc-select-fill-color: "#232428"
       mdc-text-field-fill-color: "#232428"
       input-fill-color: "#232428"
@@ -162,3 +306,89 @@ Theme01:
       table-row-background-color: "#191A1D"
       table-row-alternative-background-color: "#16171A"
       mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.6)"
+
+# ---------------------------------------------------------------------------
+# Variante: Salbei
+# ---------------------------------------------------------------------------
+Theme01 Salbei:
+  card-mod-theme: Theme01 Salbei
+  primary-font-family: *t01_font
+  paper-font-common-base_-_font-family: *t01_font_var
+  ha-font-family-body: *t01_font_var
+  ha-font-family-heading: *t01_font_var
+  ha-card-border-radius: *t01_radius
+  ha-card-border-width: *t01_border_width
+  ha-card-box-shadow: *t01_shadow
+  ha-dialog-border-radius: *t01_dialog_radius
+  ha-badge-border-radius: *t01_badge_radius
+  mdc-shape-small: *t01_shape_small
+  mdc-shape-medium: *t01_shape_medium
+  t01-duration-fast: *t01_dur_fast
+  t01-duration: *t01_dur
+  t01-ease: *t01_ease
+  card-mod-card: *t01_cm_card
+  card-mod-row-yaml: *t01_cm_row
+  card-mod-badge: *t01_cm_badge
+  card-mod-root: *t01_cm_root
+  card-mod-sidebar: *t01_cm_sidebar
+  card-mod-more-info: *t01_cm_more_info
+  modes:
+    light:
+      <<: *t01_light
+      primary-color: "#3B7656"
+      rgb-primary-color: "59, 118, 86"
+      accent-color: "#3B7656"
+      rgb-accent-color: "59, 118, 86"
+      light-primary-color: "#DCEBE2"
+      dark-primary-color: "#2D5C43"
+    dark:
+      <<: *t01_dark
+      primary-color: "#93C2A6"
+      rgb-primary-color: "147, 194, 166"
+      accent-color: "#93C2A6"
+      rgb-accent-color: "147, 194, 166"
+      light-primary-color: "#26372D"
+      dark-primary-color: "#B5D6C2"
+
+# ---------------------------------------------------------------------------
+# Variante: Graphit (fast farblos)
+# ---------------------------------------------------------------------------
+Theme01 Graphit:
+  card-mod-theme: Theme01 Graphit
+  primary-font-family: *t01_font
+  paper-font-common-base_-_font-family: *t01_font_var
+  ha-font-family-body: *t01_font_var
+  ha-font-family-heading: *t01_font_var
+  ha-card-border-radius: *t01_radius
+  ha-card-border-width: *t01_border_width
+  ha-card-box-shadow: *t01_shadow
+  ha-dialog-border-radius: *t01_dialog_radius
+  ha-badge-border-radius: *t01_badge_radius
+  mdc-shape-small: *t01_shape_small
+  mdc-shape-medium: *t01_shape_medium
+  t01-duration-fast: *t01_dur_fast
+  t01-duration: *t01_dur
+  t01-ease: *t01_ease
+  card-mod-card: *t01_cm_card
+  card-mod-row-yaml: *t01_cm_row
+  card-mod-badge: *t01_cm_badge
+  card-mod-root: *t01_cm_root
+  card-mod-sidebar: *t01_cm_sidebar
+  card-mod-more-info: *t01_cm_more_info
+  modes:
+    light:
+      <<: *t01_light
+      primary-color: "#2A2B2F"
+      rgb-primary-color: "42, 43, 47"
+      accent-color: "#2A2B2F"
+      rgb-accent-color: "42, 43, 47"
+      light-primary-color: "#E4E4E6"
+      dark-primary-color: "#151618"
+    dark:
+      <<: *t01_dark
+      primary-color: "#D6D7DB"
+      rgb-primary-color: "214, 215, 219"
+      accent-color: "#D6D7DB"
+      rgb-accent-color: "214, 215, 219"
+      light-primary-color: "#2E2F33"
+      dark-primary-color: "#ECEDEF"

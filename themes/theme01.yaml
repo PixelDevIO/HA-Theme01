@@ -1,0 +1,164 @@
+# Theme01 – schlicht, modern, dezent
+# Ein Theme mit hellem und dunklem Modus. Home Assistant wählt den Modus
+# automatisch nach den Einstellungen im Benutzerprofil.
+
+Theme01:
+  # Schrift und Form (gilt für beide Modi)
+  primary-font-family: "Inter, Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif"
+  paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  ha-card-border-radius: "12px"
+  ha-card-border-width: "1px"
+  ha-card-box-shadow: "none"
+  ha-dialog-border-radius: "16px"
+  ha-badge-border-radius: "16px"
+  mdc-shape-small: "10px"
+  mdc-shape-medium: "12px"
+
+  modes:
+    light:
+      # Akzent
+      primary-color: "#3A62CC"
+      rgb-primary-color: "58, 98, 204"
+      accent-color: "#3A62CC"
+      rgb-accent-color: "58, 98, 204"
+      light-primary-color: "#DCE4F7"
+      dark-primary-color: "#2C4EA8"
+      text-primary-color: "#FFFFFF"
+      rgb-text-primary-color: "255, 255, 255"
+
+      # Flächen
+      primary-background-color: "#F5F5F3"
+      secondary-background-color: "#EFEFEC"
+      card-background-color: "#FFFFFF"
+      rgb-card-background-color: "255, 255, 255"
+      ha-card-background: "#FFFFFF"
+      ha-card-border-color: "#E6E6E2"
+      divider-color: "#E6E6E2"
+      clear-background-color: "#FFFFFF"
+      code-editor-background-color: "#FAFAF9"
+
+      # Text
+      primary-text-color: "#1B1C1E"
+      rgb-primary-text-color: "27, 28, 30"
+      secondary-text-color: "#64656B"
+      disabled-text-color: "#A3A4A8"
+
+      # Kopfzeile und Seitenleiste
+      app-header-background-color: "#F5F5F3"
+      app-header-text-color: "#1B1C1E"
+      app-header-border-bottom: "1px solid #E6E6E2"
+      app-header-selection-bar-color: "#3A62CC"
+      sidebar-background-color: "#FAFAF9"
+      sidebar-text-color: "#64656B"
+      sidebar-icon-color: "#64656B"
+      sidebar-selected-text-color: "#1B1C1E"
+      sidebar-selected-icon-color: "#3A62CC"
+      sidebar-menu-button-text-color: "#1B1C1E"
+      sidebar-menu-button-background-color: "#FAFAF9"
+
+      # Zustände
+      state-icon-color: "#64656B"
+      state-active-color: "#3A62CC"
+      state-inactive-color: "#A3A4A8"
+      state-light-active-color: "#A8730F"
+      state-climate-heat-color: "#B5551C"
+      state-climate-cool-color: "#3A62CC"
+      state-climate-auto-color: "#3B7656"
+      state-on-color: "#3A62CC"
+      state-off-color: "#A3A4A8"
+      success-color: "#3B7656"
+      warning-color: "#A8730F"
+      error-color: "#B3261E"
+      info-color: "#3A62CC"
+
+      # Schalter und Regler
+      switch-checked-color: "#3A62CC"
+      switch-checked-button-color: "#FFFFFF"
+      switch-checked-track-color: "#3A62CC"
+      switch-unchecked-button-color: "#FFFFFF"
+      switch-unchecked-track-color: "#C9C9C5"
+      slider-color: "#3A62CC"
+      slider-bar-color: "#E6E6E2"
+      mdc-theme-primary: "#3A62CC"
+      mdc-select-fill-color: "#EFEFEC"
+      mdc-text-field-fill-color: "#EFEFEC"
+      input-fill-color: "#EFEFEC"
+
+      # Tabellen und Dialoge
+      table-row-background-color: "#FFFFFF"
+      table-row-alternative-background-color: "#FAFAF9"
+      mdc-dialog-scrim-color: "rgba(27, 28, 30, 0.32)"
+
+    dark:
+      # Akzent
+      primary-color: "#8EABF5"
+      rgb-primary-color: "142, 171, 245"
+      accent-color: "#8EABF5"
+      rgb-accent-color: "142, 171, 245"
+      light-primary-color: "#2A3352"
+      dark-primary-color: "#B3C6F8"
+      text-primary-color: "#111214"
+      rgb-text-primary-color: "17, 18, 20"
+
+      # Flächen
+      primary-background-color: "#111214"
+      secondary-background-color: "#232428"
+      card-background-color: "#191A1D"
+      rgb-card-background-color: "25, 26, 29"
+      ha-card-background: "#191A1D"
+      ha-card-border-color: "#26272B"
+      divider-color: "#26272B"
+      clear-background-color: "#111214"
+      code-editor-background-color: "#16171A"
+
+      # Text
+      primary-text-color: "#ECEDEF"
+      rgb-primary-text-color: "236, 237, 239"
+      secondary-text-color: "#9C9DA4"
+      disabled-text-color: "#5E5F66"
+
+      # Kopfzeile und Seitenleiste
+      app-header-background-color: "#111214"
+      app-header-text-color: "#ECEDEF"
+      app-header-border-bottom: "1px solid #26272B"
+      app-header-selection-bar-color: "#8EABF5"
+      sidebar-background-color: "#0E0F11"
+      sidebar-text-color: "#9C9DA4"
+      sidebar-icon-color: "#9C9DA4"
+      sidebar-selected-text-color: "#ECEDEF"
+      sidebar-selected-icon-color: "#8EABF5"
+      sidebar-menu-button-text-color: "#ECEDEF"
+      sidebar-menu-button-background-color: "#0E0F11"
+
+      # Zustände
+      state-icon-color: "#9C9DA4"
+      state-active-color: "#8EABF5"
+      state-inactive-color: "#5E5F66"
+      state-light-active-color: "#E6B45C"
+      state-climate-heat-color: "#E89A66"
+      state-climate-cool-color: "#8EABF5"
+      state-climate-auto-color: "#93C2A6"
+      state-on-color: "#8EABF5"
+      state-off-color: "#5E5F66"
+      success-color: "#93C2A6"
+      warning-color: "#E6B45C"
+      error-color: "#F2867E"
+      info-color: "#8EABF5"
+
+      # Schalter und Regler
+      switch-checked-color: "#8EABF5"
+      switch-checked-button-color: "#111214"
+      switch-checked-track-color: "#8EABF5"
+      switch-unchecked-button-color: "#9C9DA4"
+      switch-unchecked-track-color: "#232428"
+      slider-color: "#8EABF5"
+      slider-bar-color: "#26272B"
+      mdc-theme-primary: "#8EABF5"
+      mdc-select-fill-color: "#232428"
+      mdc-text-field-fill-color: "#232428"
+      input-fill-color: "#232428"
+
+      # Tabellen und Dialoge
+      table-row-background-color: "#191A1D"
+      table-row-alternative-background-color: "#16171A"
+      mdc-dialog-scrim-color: "rgba(0, 0, 0, 0.6)"
